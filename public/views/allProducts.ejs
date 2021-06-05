@@ -1,0 +1,25 @@
+<%- include('.././partials/header'); %>
+    <div class="container">
+        <% if (products.length>= 1) { %>
+
+            <% for(var i=0; i < products.length; i++) { %>
+                <br>
+                <% var link=`http://localhost:8000/product/${products[i]._id}` %>
+                    <div class="card" style="background-color: aquamarine;">
+                        <div class="card-body">
+                            <h1 class="card-title"> Name : <%= products[i].name %>
+                            </h1>
+                            <h3 class="card-subtitle"> Price : <%= products[i].price %>
+                            </h3>
+                            <a class="card-link" href="<%=link%>"> Details </a>
+                        </div>
+                    </div>
+
+                    <% } %>
+                        <% }else{ %>
+                            <div class="container">
+                                <h1 class="display-1"> Product List is Empty </h1>
+                            </div>
+                            <% } %>
+    </div>
+    <%- include('.././partials/footer'); %>

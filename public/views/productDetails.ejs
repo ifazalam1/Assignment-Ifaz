@@ -1,0 +1,100 @@
+<%- include('.././partials/header'); %>
+
+<div class="container">
+    <h2 class="display-2"">Product Details</h2>
+</div>
+
+<div class="container">
+    <div class="card">
+    <div class="card-body">
+        <img class="card-image" src="<%= product.photoUrl %>"></img>
+        <h1 class="card-title"> Name : <%= product.name %></h1>
+        <h4 class="card-subtitle"> Quantity : <span id="qty"></span></h4>
+        <h5 class="card-text"> Price : <%= product.price %> </h5>
+        <button id="cartAdd" class="card-actions btn btn-primary"> Add to cart </button>
+        <button id="cartRemove" class="card-actions btn btn-primary"> Remove from cart </button> 
+    </div>
+    </div>
+</div>
+<script>
+    var product = <%- JSON.stringify(product) %>;
+    var cartStorage = JSON.parse(window.localStorage.getItem("cart") || "[]");
+    // window.localStorage.setItem("cart", JSON.stringify(cartStorage));
+    console.log(product);
+    console.log("cart storage");
+    console.log(cartStorage);
+
+    var carItem = {
+        id: product._id,
+        ...product,
+        cartCount: 0
+    };
+
+
+    console.log("before adding", carItem);
+
+    for (var i = 0; i < cartStorage.length; i++) {
+        if (cartStorage[i].id == product._id) {
+            carItem = cartStorage[i];
+        }
+    }
+     
+    
+    var newQuantity = product.quantity - carItem.cartCount;
+    document.getElementById("qty").innerHTML = newQuantity;
+    
+    if(carItem.cartCount == 0){
+        document.getElementById("cartRemove").classList.add("d-none")
+    }
+
+
+    // button action
+    document.getElementById("cartAdd").addEventListener("click", (e) => {
+    var itemInList = false;
+    // on click
+    if (product.quantity - carItem.cartCount > 0) {
+        carItem.cartCount++;
+        document.getElementById("qty").innerHTML = product.quantity - carItem.cartCount;
+    }
+    
+    for (var i = 0; i < cartStorage.length; i++) {
+        if (cartStorage[i].id == product._id) {
+            cartStorage[i] = carItem;
+            itemInList = true;
+            }
+        }
+    if(!itemInList) cartStorage.push(carItem);
+    console.log("after adding", cartStorage);
+    document.getElementById("cartRemove").classList.remove("d-none");
+    window.localStorage.setItem("cart", JSON.stringify(cartStorage));
+    });
+
+    
+    
+
+    document.getElementById("cartRemove").addEventListener("click", (e) => {
+    var itemInList = false;
+    // on click
+    if(carItem.cartCount != 0) {
+    carItem.cartCount--;
+    document.getElementById("qty").innerHTML =  product.quantity - carItem.cartCount;
+
+    for (var i = 0; i < cartStorage.length; i++) {
+        if (cartStorage[i].id == product._id) {
+            cartStorage[i] = carItem;
+            itemInList = true;
+            }
+        }
+    console.log("after adding", cartStorage);
+
+    if(carItem.cartCount == 0){
+        document.getElementById("cartRemove").classList.add("d-none")
+    }
+
+    document.getElementById("cartRemove").classList.remove("d-none");
+    window.localStorage.setItem("cart", JSON.stringify(cartStorage));
+    }
+
+    });
+</script>
+<%- include('.././partials/footer'); %>
